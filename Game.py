@@ -5,7 +5,7 @@ import os
 import sys
 
 pygame.init()
-screen = pygame.display.set_mode((1920, 1080))
+screen = pygame.display.set_mode((1920, 1080), pygame.FULLSCREEN)
 clock = pygame.time.Clock()
 FPS = 60
 pygame.mouse.set_visible(0)
@@ -102,7 +102,18 @@ def game(pos):
     cur.rect = cur.image.get_rect()
     cur.rect.x = pos[0] - 75
     cur.rect.y = pos[1] - 75
-    game_sprites.add(cur)
+    score = pygame.sprite.Sprite()
+    score.image = load_image("score.png")
+    score.rect = cur.image.get_rect()
+    score.rect.x = 50
+    score.rect.y = 900
+    game_sprites.add(score)
+    bullets = pygame.sprite.Sprite()
+    bullets.image = load_image("bullets.png")
+    bullets.rect = cur.image.get_rect()
+    bullets.rect.x = 50
+    bullets.rect.y = 1000
+    game_sprites.add(bullets)
     bird = AnimatedSprite(load_image("bird-sprite.png"), 5, 3, -100, 360)
     bird_sprites.add(bird)
     game_sprites.add(cur)
