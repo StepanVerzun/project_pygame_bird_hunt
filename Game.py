@@ -14,6 +14,8 @@ death = pygame.mixer.Sound('death.wav')
 GRAVITY = 0.1
 screen_rect = (0, 0, 1920, 1080)
 feathers = pygame.sprite.Group()
+dontshot = pygame.mixer.Sound('dontshot.wav')
+vzvod = pygame.mixer.Sound('vzvod.wav')
 
 def load_image(name):
     fullname = os.path.join('data', name)
@@ -138,15 +140,21 @@ def game(pos):
                     bird.rect.x = -100
                     bird.rect.y = 360
                     create_particles(pygame.mouse.get_pos())
+                else:
+                    dontshot.play()
             if event.type == pygame.MOUSEBUTTONDOWN and not bird.rect.collidepoint(event.pos):
                 if counter == 0:
                     shot.set_volume(0.5)
                     counter = 3
                     shot.play()
+                else:
+                    dontshot.play()
             if event.type == pygame.USEREVENT:
                 if counter != 0:
                     counter -= 1
                     text = 'reload' + str(counter).rjust(3) if counter > 0 else 'charged'
+                    if counter == 1:
+                        vzvod.play()
         feathers.update()
         screen.blit(fon, (0, 0))
         feathers.draw(screen)
@@ -154,13 +162,13 @@ def game(pos):
         bird_sprites.draw(screen)
         game_sprites.draw(screen)
         clock.tick(FPS)
-        screen.blit(font.render(text, True, (255, 0, 0)), (500, 500))
+        screen.blit(font.render(text, True, (255, 0, 0)), (500, 900))
         pygame.display.flip()
 
 
 class Particle(pygame.sprite.Sprite):
     # сгенерируем частицы разного размера
-    fire = [load_image("feathers.png")]
+    fire = [load_image("feather.png")]
     for scale in (5, 10, 20):
         fire.append(pygame.transform.scale(fire[0], (scale, scale)))
 
