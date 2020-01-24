@@ -7,6 +7,7 @@ screen = pygame.display.set_mode((1920, 1080), pygame.FULLSCREEN)
 clock = pygame.time.Clock()
 FPS = 60
 pygame.mouse.set_visible(0)
+shot = pygame.mixer.Sound('shot.wav')
 
 
 def load_image(name):
@@ -109,6 +110,11 @@ def game(pos):
                 cur.rect.center = event.pos
             if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
                 start_screen()
+            if event.type == pygame.MOUSEBUTTONDOWN and bird.rect.collidepoint(event.pos):
+                bird.rect.x = -100
+                bird.rect.y = 360
+            if event.type == pygame.MOUSEBUTTONDOWN and not bird.rect.collidepoint(event.pos):
+                shot.play()
         bird_sprites.update()
         bird_sprites.draw(screen)
         game_sprites.draw(screen)
