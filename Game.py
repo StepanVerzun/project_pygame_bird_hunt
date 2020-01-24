@@ -56,13 +56,49 @@ def start_screen():
 
 
 def game(pos):
+    class AnimatedSprite(pygame.sprite.Sprite):
+        def __init__(self, sheet, columns, rows, x, y):
+            super().__init__(bird_sprites)
+            self.frames = []
+            self.cut_sheet(sheet, columns, rows)
+            self.cur_frame = 0
+            self.image = self.frames[self.cur_frame]
+            self.rect = self.rect.move(x, y)
+            self.vx = 5
+            self.vy = -10
+
+        def cut_sheet(self, sheet, columns, rows):
+            self.rect = pygame.Rect(0, 0, sheet.get_width() // columns,
+                                    sheet.get_height() // rows)
+            for j in range(rows):
+                for i in range(columns):
+                    frame_location = (self.rect.w * i, self.rect.h * j)
+                    self.frames.append(sheet.subsurface(pygame.Rect(
+                        frame_location, self.rect.size)))
+
+        def update(self):
+            self.cur_frame = (self.cur_frame + 1) % len(self.frames)
+            self.image = self.frames[self.cur_frame]
+            self.rect = self.rect.move(self.vx, self.vy)
+            if self.rect.x == 2100:
+                self.rect.x = -100
+                self.rect.y = 360
+            if self.rect.y == 100:
+                self.vy = 10
+            if self.rect.y == 800:
+                self.vy = -10
+
     fon = pygame.transform.scale(load_image('bg.png'), (1920, 1080))
     game_sprites = pygame.sprite.Group()
+    bird_sprites = pygame.sprite.Group()
     cur = pygame.sprite.Sprite()
     cur.image = load_image("cross.png")
     cur.rect = cur.image.get_rect()
     cur.rect.x = pos[0] - 75
     cur.rect.y = pos[1] - 75
+    game_sprites.add(cur)
+    bird = AnimatedSprite(load_image("bird-sprite.png"), 5, 3, -100, 360)
+    bird_sprites.add(bird)
     game_sprites.add(cur)
     while True:
         screen.blit(fon, (0, 0))
@@ -73,6 +109,8 @@ def game(pos):
                 cur.rect.center = event.pos
             if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
                 start_screen()
+        bird_sprites.update()
+        bird_sprites.draw(screen)
         game_sprites.draw(screen)
         clock.tick(FPS)
         pygame.display.flip()
