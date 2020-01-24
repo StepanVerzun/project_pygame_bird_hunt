@@ -1,3 +1,5 @@
+import random
+
 import pygame
 import os
 import sys
@@ -8,6 +10,9 @@ clock = pygame.time.Clock()
 FPS = 60
 pygame.mouse.set_visible(0)
 shot = pygame.mixer.Sound('shot.wav')
+GRAVITY = 0.1
+screen_rect = (0, 0, 1920, 1080)
+feathers = pygame.sprite.Group()
 
 
 def load_image(name):
@@ -113,13 +118,44 @@ def game(pos):
             if event.type == pygame.MOUSEBUTTONDOWN and bird.rect.collidepoint(event.pos):
                 bird.rect.x = -100
                 bird.rect.y = 360
+                create_particles(pygame.mouse.get_pos())
             if event.type == pygame.MOUSEBUTTONDOWN and not bird.rect.collidepoint(event.pos):
                 shot.play()
+        feathers.update()
+        screen.blit(fon, (0, 0))
+        feathers.draw(screen)
         bird_sprites.update()
         bird_sprites.draw(screen)
         game_sprites.draw(screen)
         clock.tick(FPS)
         pygame.display.flip()
 
+
+class Particle(pygame.sprite.Sprite):
+    # сгенерируем частицы разного размера
+    fire = [load_image("feathers.png")]
+    for scale in (5, 10, 20):
+        fire.append(pygame.transform.scale(fire[0], (scale, scale)))
+
+    def __init__(self, pos, dx, dy):
+        super().__init__(feathers)
+        self.image = random.choice(self.fire)
+        self.rect = self.image.get_rect()
+        self.velocity = [dx, dy]
+        self.rect.x, self.rect.y = pos
+        self.gravity = GRAVITY
+
+    def update(self):
+        self.velocity[1] += self.gravity
+        self.rect.x += self.velocity[0]
+        self.rect.y += self.velocity[1]
+        if not self.rect.colliderect(screen_rect):
+            self.kill()
+
+def create_particles(position):
+    particle_count = 20
+    numbers = range(-5, 6)
+    for _ in range(particle_count):
+        Particle(position, random.choice(numbers), random.choice(numbers))
 
 start_screen()
