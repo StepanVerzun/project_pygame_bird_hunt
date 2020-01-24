@@ -5,15 +5,15 @@ import os
 import sys
 
 pygame.init()
-screen = pygame.display.set_mode((1920, 1080), pygame.FULLSCREEN)
+screen = pygame.display.set_mode((1920, 1080))
 clock = pygame.time.Clock()
 FPS = 60
 pygame.mouse.set_visible(0)
 shot = pygame.mixer.Sound('shot.wav')
+death = pygame.mixer.Sound('death.wav')
 GRAVITY = 0.1
 screen_rect = (0, 0, 1920, 1080)
 feathers = pygame.sprite.Group()
-
 
 def load_image(name):
     fullname = os.path.join('data', name)
@@ -106,6 +106,9 @@ def game(pos):
     bird = AnimatedSprite(load_image("bird-sprite.png"), 5, 3, -100, 360)
     bird_sprites.add(bird)
     game_sprites.add(cur)
+    counter, text = 0, 'charged'.rjust(3)
+    pygame.time.set_timer(pygame.USEREVENT, 1000)
+    font = pygame.font.SysFont('Consolas', 100)
     while True:
         screen.blit(fon, (0, 0))
         for event in pygame.event.get():
@@ -116,11 +119,23 @@ def game(pos):
             if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
                 start_screen()
             if event.type == pygame.MOUSEBUTTONDOWN and bird.rect.collidepoint(event.pos):
-                bird.rect.x = -100
-                bird.rect.y = 360
-                create_particles(pygame.mouse.get_pos())
+                if counter == 0:
+                    death.play()
+                    shot.set_volume(0.5)
+                    counter = 3
+                    shot.play()
+                    bird.rect.x = -100
+                    bird.rect.y = 360
+                    create_particles(pygame.mouse.get_pos())
             if event.type == pygame.MOUSEBUTTONDOWN and not bird.rect.collidepoint(event.pos):
-                shot.play()
+                if counter == 0:
+                    shot.set_volume(0.5)
+                    counter = 3
+                    shot.play()
+            if event.type == pygame.USEREVENT:
+                if counter != 0:
+                    counter -= 1
+                    text = 'reload' + str(counter).rjust(3) if counter > 0 else 'charged'
         feathers.update()
         screen.blit(fon, (0, 0))
         feathers.draw(screen)
@@ -128,6 +143,7 @@ def game(pos):
         bird_sprites.draw(screen)
         game_sprites.draw(screen)
         clock.tick(FPS)
+        screen.blit(font.render(text, True, (255, 0, 0)), (500, 500))
         pygame.display.flip()
 
 
@@ -152,10 +168,12 @@ class Particle(pygame.sprite.Sprite):
         if not self.rect.colliderect(screen_rect):
             self.kill()
 
+
 def create_particles(position):
     particle_count = 20
     numbers = range(-5, 6)
     for _ in range(particle_count):
         Particle(position, random.choice(numbers), random.choice(numbers))
+
 
 start_screen()
