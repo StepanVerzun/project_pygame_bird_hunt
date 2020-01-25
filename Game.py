@@ -16,6 +16,7 @@ feathers = pygame.sprite.Group()
 dontshot = pygame.mixer.Sound('dontshot.wav')
 vzvod = pygame.mixer.Sound('vzvod.wav')
 
+
 def load_image(name):
     fullname = os.path.join('data', name)
     image = pygame.image.load(fullname).convert_alpha()
