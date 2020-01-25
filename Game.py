@@ -121,6 +121,12 @@ def game(pos):
     bird = AnimatedSprite(load_image("bird-sprite.png"), 5, 3, -100, 360)
     bird_sprites.add(bird)
     game_sprites.add(cur)
+    vyhod = pygame.sprite.Sprite()
+    vyhod.image = load_image("ESC.png")
+    vyhod.rect = cur.image.get_rect()
+    vyhod.rect.x = 10
+    vyhod.rect.y = 10
+    game_sprites.add(vyhod)
     counter, text = 0, 'charged'.rjust(3)
     pygame.time.set_timer(pygame.USEREVENT, 1000)
     font = pygame.font.SysFont('Consolas', 100)
@@ -171,16 +177,13 @@ def game(pos):
         bird_sprites.draw(screen)
         game_sprites.draw(screen)
         clock.tick(FPS)
-        vyhod = 'press \'esc\' to exit'
-        screen.blit(font.render(vyhod, True, (255, 0, 0)), (0, 0))
         screen.blit(font.render(text, True, (255, 0, 0)), (1000, 900))
-        screen.blit(font.render(str(points), True, (255, 0, 0)), (50 + bullets.image.get_width() + 50, 900))
-        screen.blit(font.render(str(shots), True, (255, 0, 0)), (50 + bullets.image.get_width() + 50, 1000))
+        screen.blit(font.render(str(points), True, (255, 0, 0)), (50 + bullets.image.get_width() + 50, 890))
+        screen.blit(font.render(str(shots), True, (255, 0, 0)), (50 + bullets.image.get_width() + 50, 990))
         pygame.display.flip()
 
 
 class Particle(pygame.sprite.Sprite):
-    # сгенерируем частицы разного размера
     fire = [load_image("feather.png")]
     for scale in (5, 10, 20):
         fire.append(pygame.transform.scale(fire[0], (scale, scale)))
