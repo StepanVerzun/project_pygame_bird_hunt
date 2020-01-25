@@ -86,8 +86,8 @@ def game(pos):
         def update(self):
             self.cur_frame = (self.cur_frame + 1) % len(self.frames)
             self.image = self.frames[self.cur_frame]
-            self.rect = self.rect.move(self.vx, self.vy)
-            if self.rect.x == 2100:
+            self.rect = self.rect.move(int(self.vx), self.vy)
+            if self.rect.x >= 2100:
                 self.rect.x = -100
                 self.rect.y = 360
             if self.rect.y == 100:
@@ -141,6 +141,7 @@ def game(pos):
                     counter = 3
                     shot.play()
                     bird.rect.x = -800
+                    bird.vx += 0.25
                     create_particles(pygame.mouse.get_pos())
                 else:
                     dontshot.play()
@@ -149,6 +150,7 @@ def game(pos):
                     shots -= 1
                     if shots == 0:
                         bird.rect.x = -800
+                        bird.vx += 0.25
                         shots = 3
                     shot.set_volume(0.5)
                     counter = 3
@@ -168,7 +170,9 @@ def game(pos):
         bird_sprites.draw(screen)
         game_sprites.draw(screen)
         clock.tick(FPS)
-        screen.blit(font.render(text, True, (255, 0, 0)), (500, 900))
+        vyhod = 'press \'esc\' to exit'
+        screen.blit(font.render(vyhod, True, (255, 0, 0)), (0, 0))
+        screen.blit(font.render(text, True, (255, 0, 0)), (1000, 900))
         screen.blit(font.render(str(points), True, (255, 0, 0)), (50 + bullets.image.get_width() + 50, 900))
         screen.blit(font.render(str(shots), True, (255, 0, 0)), (50 + bullets.image.get_width() + 50, 1000))
         pygame.display.flip()
