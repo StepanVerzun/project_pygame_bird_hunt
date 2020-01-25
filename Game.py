@@ -55,7 +55,7 @@ def start_screen():
             if event.type == pygame.MOUSEMOTION:
                 cur.rect.center = event.pos
             if event.type == pygame.MOUSEBUTTONDOWN and playbut.rect.collidepoint(event.pos):
-                mode_screen()
+                mode_screen(event.pos)
             if event.type == pygame.MOUSEBUTTONDOWN and exitbut.rect.collidepoint(event.pos):
                 terminate()
         start_sprites.draw(screen)
@@ -63,7 +63,7 @@ def start_screen():
         pygame.display.flip()
 
 
-def mode_screen():
+def mode_screen(pos):
     fon = pygame.transform.scale(load_image('modescreen.jpg'), (1920, 1080))
     choose_sprites = pygame.sprite.Group()
     one_but = pygame.sprite.Sprite()
@@ -87,6 +87,8 @@ def mode_screen():
     cur = pygame.sprite.Sprite()
     cur.image = load_image("cross.png")
     cur.rect = cur.image.get_rect()
+    cur.rect.x = pos[0] - 75
+    cur.rect.y = pos[1] - 75
     choose_sprites.add(cur)
     while True:
         screen.blit(fon, (0, 0))
