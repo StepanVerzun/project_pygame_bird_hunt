@@ -320,8 +320,8 @@ def game(pos, kolvo):
 
 class Particle(pygame.sprite.Sprite):
     # сгенерируем частицы разного размера
-    fire = [load_image("feather.png")]
-    for scale in (5, 10, 20):
+    fire = [load_image("feather2.png")]
+    for scale in (50, 60, 50):
         fire.append(pygame.transform.scale(fire[0], (scale, scale)))
 
     def __init__(self, pos, dx, dy):
