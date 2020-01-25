@@ -1,5 +1,4 @@
 import random
-
 import pygame
 import os
 import sys
@@ -96,6 +95,8 @@ def game(pos):
             if self.rect.y == 800:
                 self.vy = -10
 
+    shots = 3
+    points = 0
     fon = pygame.transform.scale(load_image('bg.png'), (1920, 1080))
     game_sprites = pygame.sprite.Group()
     bird_sprites = pygame.sprite.Group()
@@ -133,17 +134,22 @@ def game(pos):
                 start_screen()
             if event.type == pygame.MOUSEBUTTONDOWN and bird.rect.collidepoint(event.pos):
                 if counter == 0:
+                    points += shots * 10
+                    shots = 3
                     death.play()
                     shot.set_volume(0.5)
                     counter = 3
                     shot.play()
-                    bird.rect.x = -100
-                    bird.rect.y = 360
+                    bird.rect.x = -800
                     create_particles(pygame.mouse.get_pos())
                 else:
                     dontshot.play()
             if event.type == pygame.MOUSEBUTTONDOWN and not bird.rect.collidepoint(event.pos):
                 if counter == 0:
+                    shots -= 1
+                    if shots == 0:
+                        bird.rect.x = -800
+                        shots = 3
                     shot.set_volume(0.5)
                     counter = 3
                     shot.play()
@@ -163,6 +169,8 @@ def game(pos):
         game_sprites.draw(screen)
         clock.tick(FPS)
         screen.blit(font.render(text, True, (255, 0, 0)), (500, 900))
+        screen.blit(font.render(str(points), True, (255, 0, 0)), (50 + bullets.image.get_width() + 50, 900))
+        screen.blit(font.render(str(shots), True, (255, 0, 0)), (50 + bullets.image.get_width() + 50, 1000))
         pygame.display.flip()
 
 
