@@ -103,6 +103,8 @@ def mode_screen(pos):
                 game(event.pos, 2)
             if event.type == pygame.MOUSEBUTTONDOWN and three_but.rect.collidepoint(event.pos):
                 game(event.pos, 3)
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+                start_screen()
         choose_sprites.draw(screen)
         clock.tick(FPS)
         pygame.display.flip()
