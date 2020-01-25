@@ -95,6 +95,8 @@ def mode_screen(pos):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 terminate()
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+                start_screen()
             if event.type == pygame.MOUSEMOTION:
                 cur.rect.center = event.pos
             if event.type == pygame.MOUSEBUTTONDOWN and one_but.rect.collidepoint(event.pos):
